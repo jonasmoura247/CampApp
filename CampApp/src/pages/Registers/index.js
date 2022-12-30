@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import  config  from '../../../config/config.json';
 import {
   View,
   Text,
@@ -6,49 +7,71 @@ import {
   TextInput,
   TouchableOpacity
 } from 'react-native';
-
 import * as Animatable from 'react-native-animatable'
 import { useNavigation } from '@react-navigation/native'
 
-export default function SignIn() {
-  const navigation = useNavigation();
+export default function Registers() {
+  const [user, setUser] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [email, setEmail] = useState(null);
+
+  async function regUser() {  
+    let reqs = await fetch(config.urlRootNode + 'create', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nameUser: user,
+        passwordUser: password,
+        emailUser: email
+      })
+
+    });
+      console.log('função acionada');
+
+  }
+
   return (
     <View style={styles.container}>
       <Animatable.View animation="fadeInLeft" delay={500} style={styles.containerHeader}>
         <Text style={styles.message}>Bem-Vindo(a)</Text>
+        <Text>{user}-{email}-{password}</Text>
       </Animatable.View>
 
-
       <Animatable.View animation="fadeInUp" style={styles.containerForm}>
+
+        <Text style={styles.title}>Nome</Text>
+        <TextInput
+          placeholder="Informe seu nome"
+          style={styles.input}
+          onChangeText={(text) => setUser(text)}
+        />
+
         <Text style={styles.title}>Email</Text>
         <TextInput
-          placeholder="digite seu email..."
+          placeholder="Informe seu Email"
           style={styles.input}
+          onChangeText={(text) => setEmail(text)}
         />
 
         <Text style={styles.title}>Senha</Text>
         <TextInput
-          placeholder="Sua Senha"
+          placeholder="Senha"
           style={styles.input}
+          onChangeText={(text) => setPassword(text)}
         />
 
         <TouchableOpacity
           style={styles.button}
+          onPress={regUser}
         >
-          <Text style={styles.buttonText}>Acessar</Text>
+          
+          <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.buttonRegister}
-          onPress={() => navigation.navigate('Registers')}
-        >
-          <Text style={styles.buttonRegister}>ainda não possui cadastro? clique aqui para cadastrar </Text>
-        </TouchableOpacity>
-
       </Animatable.View>
-
     </View>
-
   );
 }
 
@@ -101,11 +124,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   buttonRegister: {
-    color: '#a1a1a1',
-    marginTop: 3,
+    marginTop: 14,
     alignSelf: 'center',
-    fontSize: 14,
+  },
+  registerText: {
+    color: '#a1a1a1',
+
   }
 
 })
-
